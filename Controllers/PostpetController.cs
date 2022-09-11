@@ -14,10 +14,10 @@ namespace petsLighthouseAPI.Controllers
     public class postpetController : ControllerBase
     {
 
-        private readonly petDBContext _context;
+        private readonly petsLighthouseDBContext _context;
         private readonly IPostPetService _postPetService;
 
-        public postpetController(petDBContext context, IPostPetService postPetService)
+        public postpetController(petsLighthouseDBContext context, IPostPetService postPetService)
         {
             _context = context;
             _postPetService = postPetService;
@@ -128,12 +128,12 @@ namespace petsLighthouseAPI.Controllers
         {
             var authR = (Response)HttpContext.Items["User"];
             var authUser = authR.Data as UserView;
-            if (authUser.idUser == id)
+            var response = await _postPetService.deletePost(id, authUser);
+            if(response.Success == 0)
             {
-                var response = await _postPetService.deletePost(id);
-                return Ok(response);
+                return Unauthorized(response);
             }
-            return Unauthorized();
+            return Ok(response);
         }
     }
 }

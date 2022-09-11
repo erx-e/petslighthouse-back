@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace petsLighthouseAPI
 {
-    public partial class petDBContext : DbContext
+    public partial class petsLighthouseDBContext : DbContext
     {
-        public petDBContext()
+        public petsLighthouseDBContext()
         {
         }
 
-        public petDBContext(DbContextOptions<petDBContext> options)
+        public petsLighthouseDBContext(DbContextOptions<petsLighthouseDBContext> options)
             : base(options)
         {
         }
@@ -27,10 +27,9 @@ namespace petsLighthouseAPI
         public virtual DbSet<Sector> Sectors { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "Modern_Spanish_CI_AS");
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<Canton>(entity =>
             {
@@ -38,8 +37,6 @@ namespace petsLighthouseAPI
                     .HasName("PK_city_id");
 
                 entity.ToTable("canton", "mydb");
-
-                entity.HasIndex(e => e.Name, "city$city_name");
 
                 entity.Property(e => e.IdCanton)
                     .ValueGeneratedNever()
@@ -66,10 +63,6 @@ namespace petsLighthouseAPI
 
                 entity.ToTable("pet_breed", "mydb");
 
-                entity.HasIndex(e => e.IdSpecie, "fk_pet_breed_pet_specie_idx");
-
-                entity.HasIndex(e => e.BreedName, "pet_breed$breed_type");
-
                 entity.Property(e => e.IdPetBreed).HasColumnName("id_petBreed");
 
                 entity.Property(e => e.BreedName)
@@ -92,8 +85,6 @@ namespace petsLighthouseAPI
                     .HasName("PK_pet_specie_id");
 
                 entity.ToTable("pet_specie", "mydb");
-
-                entity.HasIndex(e => e.SpecieName, "pet_specie$specie_type");
 
                 entity.Property(e => e.IdPetSpecie).HasColumnName("id_petSpecie");
 
@@ -153,10 +144,6 @@ namespace petsLighthouseAPI
                     .HasName("PK_post_pet_id");
 
                 entity.ToTable("post_pet", "mydb");
-
-                entity.HasIndex(e => e.IdPetSpecie, "fk_lost_pet_pet_type1_idx");
-
-                entity.HasIndex(e => e.IdUser, "fk_lost_pet_user1_idx");
 
                 entity.Property(e => e.IdPostPet).HasColumnName("id_postPet");
 
@@ -282,10 +269,6 @@ namespace petsLighthouseAPI
                     .HasName("PK_sectoryciudadela_id");
 
                 entity.ToTable("sector", "mydb");
-
-                entity.HasIndex(e => e.IdCanton, "fk_Sector_city1_idx");
-
-                entity.HasIndex(e => e.Name, "sectoryciudadela$sector_name_UNIQUE");
 
                 entity.Property(e => e.IdSector)
                     .ValueGeneratedNever()

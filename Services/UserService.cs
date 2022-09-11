@@ -17,9 +17,9 @@ namespace petsLighthouseAPI.Services
     class UserService : IUserService
     {
         private readonly JwtOptions _jwtOptions;
-        private readonly petDBContext _context;
+        private readonly petsLighthouseDBContext _context;
         private readonly IPostPetService _postPetService;
-        public UserService(petDBContext context, IOptions<JwtOptions> jwtOptions, IPostPetService postPetService)
+        public UserService(petsLighthouseDBContext context, IOptions<JwtOptions> jwtOptions, IPostPetService postPetService)
         {
             _context = context;
             _jwtOptions = jwtOptions.Value;

@@ -1,5 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using petsLighthouseAPI.Models;
 using System;
@@ -11,10 +12,10 @@ namespace petsLighthouseAPI.Services
 {
     public class PostpetService : IPostPetService
     {
-        private readonly petDBContext _context;
+        private readonly petsLighthouseDBContext _context;
         private readonly IAmazonS3 s3Client;
         string bucketName = "petslighthouse";
-        public PostpetService(petDBContext context, IAmazonS3 s3Client)
+        public PostpetService(petsLighthouseDBContext context, IAmazonS3 s3Client)
         {
             _context = context;
             this.s3Client = s3Client;
@@ -368,6 +369,14 @@ namespace petsLighthouseAPI.Services
         {
             var response = new Response();
 
+            if(postpetDTO.idState != "A" && postpetDTO.idState != "H")
+            {
+                if (!postpetDTO.lastTimeSeen.HasValue)
+                {
+                    return response;
+                }
+            }
+
             var postpetNew = new PostPet
             {
                 IdUser = postpetDTO.idUser,
@@ -383,7 +392,7 @@ namespace petsLighthouseAPI.Services
                 IdSector = postpetDTO.idSector != null ? postpetDTO.idSector : null,
                 Description = postpetDTO.description,
                 Reward = postpetDTO.reward != null ? postpetDTO.reward : null,
-                LastTimeSeen = postpetDTO.lastTimeSeen,
+                LastTimeSeen = postpetDTO.lastTimeSeen != null ? (DateTime)postpetDTO.lastTimeSeen : null,
                 LinkMapSeen = postpetDTO.linkMapSeen != null ? postpetDTO.linkMapSeen : null
             };
             _context.Add(postpetNew);
@@ -435,6 +444,7 @@ namespace petsLighthouseAPI.Services
             postpetNew.IdUser = postpetOld.IdUser;
             postpetNew.IdPostPet = postpetOld.IdPostPet;
 
+            postpetNew.PetName = postpetDTO.petName != null ? postpetDTO.petName : postpetOld.PetName;
             postpetNew.PetAge = postpetDTO.petAge != null ? postpetDTO.petAge : postpetOld.PetAge;
             postpetNew.PetSpecialCondition = postpetDTO.petSpecialCondition != null ? postpetDTO.petSpecialCondition : postpetOld.PetSpecialCondition;
             postpetNew.Contact = postpetDTO.contact != null ? postpetDTO.contact : postpetOld.Contact;
@@ -493,7 +503,7 @@ namespace petsLighthouseAPI.Services
             return response;
         }
 
-        public async Task<Response> deletePost(int id)
+        public async Task<Response> deletePost(int id, UserView? user = null)
         {
             var response = new Response();
             var postpet = _context.PostPets.Find(id);
@@ -501,6 +511,14 @@ namespace petsLighthouseAPI.Services
             {
                 response.Message = "Incorrect post id";
                 return response;
+            }
+            if (user != null)
+            {
+                if(user.idUser != postpet.IdUser)
+                {
+                    response.Message = "Incorrect user id";
+                    return response;
+                }
             }
 
             var postImgs = _context.PostImages.Where(img => img.IdPostPet == postpet.IdPostPet).ToList();

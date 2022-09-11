@@ -11,9 +11,9 @@ namespace petsLighthouseAPI.Controllers
     public class userController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly petDBContext _context;
+        private readonly petsLighthouseDBContext _context;
 
-        public userController(petDBContext context, IUserService userService)
+        public userController(petsLighthouseDBContext context, IUserService userService)
         {
             _context = context;
             _userService = userService;

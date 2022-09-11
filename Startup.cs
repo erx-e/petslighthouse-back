@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using petsLighthouseAPI.Middlewares;
 using petsLighthouseAPI.petsLighthouseAPI.Options;
 using petsLighthouseAPI.Services;
 using System;
@@ -19,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace petsLighthouseAPI
 {
@@ -36,27 +38,34 @@ namespace petsLighthouseAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<petDBContext>(opt =>
+            services.AddDbContext<petsLighthouseDBContext>(opt =>
             {
                 opt.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection"));
                 opt.EnableSensitiveDataLogging();
             });
+
+            //services.AddControllers().AddJsonOptions(options =>
+            // options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Perserve);
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+
+
 
             services.AddCors(option => option.AddPolicy(name: cors, builder =>
             {
                 builder.WithOrigins(Configuration.GetSection("AllowedOrigins").Get<string[]>())
                                         .AllowAnyHeader()
                                         .AllowAnyMethod();
+                //builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             }));
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPostPetService, PostpetService>();
             services.AddScoped<ICategoryService, CategoryService>();
 
-            services.AddAWSService<IAmazonS3>(new AWSOptions
-            {
-                ProfilesLocation = @"d:/DZHosts/LocalUser/erex/Protected.petslighthouse.somee.com/.aws/credentials"
-            });
+            services.AddAWSService<IAmazonS3>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -100,6 +109,10 @@ namespace petsLighthouseAPI
             app.UseRouting();
 
             app.UseCors(cors);
+
+            app.UseAuthentication();
+
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseAuthorization();
 

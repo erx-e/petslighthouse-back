@@ -6,9 +6,9 @@ namespace petsLighthouseAPI.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly petDBContext _context;
+        private readonly petsLighthouseDBContext _context;
 
-        public CategoryService(petDBContext context)
+        public CategoryService(petsLighthouseDBContext context)
         {
             _context = context;
         }

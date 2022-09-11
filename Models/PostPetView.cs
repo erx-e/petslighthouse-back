@@ -23,7 +23,7 @@ namespace petsLighthouseAPI.Models
         public string? sectorName { get; set; }
         public string description { get; set; }
         public decimal? reward { get; set; }
-        public DateTime lastTimeSeen { get; set; }
+        public DateTime? lastTimeSeen { get; set; }
         public string? linkMapSeen { get; set; }
         public List<imgModel> urlImgs { get; set; }
     }
@@ -42,7 +42,7 @@ namespace petsLighthouseAPI.Models
         public string? petSpecialCondition { get; set; }
 
         [MaxLength(45, ErrorMessage = "The {0} can not have more than {1} characters")]
-        [RegularExpression(@"^([0-9]{10}\s{1}){1,3}([0-9]{10}\s*)?$",
+        [RegularExpression(@"^([0-9]{10}\s{1}){0,3}([0-9]{10}\s*)?$",
         ErrorMessage = "must send cell numbers separated by spaces using the regex {1}")]
         public string? contact { get; set; }
 
@@ -69,10 +69,10 @@ namespace petsLighthouseAPI.Models
         [Range(0, 100000, ErrorMessage = "The {0} should be between {1} and {2} dollars")]
         public decimal? reward { get; set; }
 
-        [DataType(DataType.DateTime)]
-        [Required(ErrorMessage = "Must send lastTimeSeen property {0}"),]
+        //[DataType(DataType.DateTime)]
+        //[Required(ErrorMessage = "Must send lastTimeSeen property {0}"),]
         [DateRange(ErrorMessage = "Value for {0} must be between {1} and {2}")]
-        public DateTime lastTimeSeen { get; set; }
+        public DateTime? lastTimeSeen { get; set; }
 
         public string? linkMapSeen { get; set; }
 
@@ -98,7 +98,7 @@ namespace petsLighthouseAPI.Models
         public string? petSpecialCondition { get; set; }
 
         [MaxLength(45, ErrorMessage = "The {0} can not have more than {1} characters")]
-        [RegularExpression(@"^([0-9]{10}\s{1}){1,3}([0-9]{10}\s*)?$",
+        [RegularExpression(@"^([0-9]{10}\s{1}){0,3}([0-9]{10}\s*)?$",
         ErrorMessage = "must send cell numbers separated by spaces using the regex {1}")]
         public string? contact { get; set; }
 

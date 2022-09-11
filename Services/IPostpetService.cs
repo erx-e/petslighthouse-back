@@ -15,6 +15,6 @@ namespace petsLighthouseAPI.Services
         Response createPost(CreatePostPetDTO postpetDTO);
         Task<Response> createPostAsync(CreatePostPetDTO postpetDTO);
         Task<Response> updatePostAsync(UpdatePostPetDTO postpetDTO);
-        Task<Response> deletePost(int id);
+        Task<Response> deletePost(int id, UserView? user = null);
     }
 }

@@ -26,7 +26,7 @@ namespace petsLighthouseAPI
         public int? IdSector { get; set; }
         public string Description { get; set; }
         public decimal? Reward { get; set; }
-        public DateTime LastTimeSeen { get; set; }
+        public DateTime? LastTimeSeen { get; set; }
         public string LinkMapSeen { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
